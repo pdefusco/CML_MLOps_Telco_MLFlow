@@ -164,6 +164,7 @@ def main():
 
     # Create Banking Transactions DF
     df = dg.telcoDataGen(spark)
+    df = dg.addCorrelatedColumn(df)
 
     # Create Spark Database
     dg.createDatabase(spark)
