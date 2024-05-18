@@ -114,6 +114,23 @@ class TelcoDataGen:
         df.write.format("csv").mode('overwrite').save(self.storage + "/telco_demo/" + self.username)
 
 
+    def addCorrelatedColumn(self, dataGenDf):
+        """
+        Method to create a column iot_signal_2 with value that is correlated to value of iot_signal_1 column
+        """
+
+        from pyspark.sql.functions import udf
+        import random
+
+        def addColUdf(val):
+          return (val)+random.randint(0, 2)
+
+        udf_column = udf(addColUdf, IntegerType())
+        dataGenDf = dataGenDf.withColumn('iot_signal_2', udf_column('iot_signal_1'))
+
+        return dataGenDf
+
+
     def createDatabase(self, spark):
         """
         Method to create database before data generated is saved to new database and table
