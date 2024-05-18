@@ -180,12 +180,12 @@ class ModelReDeployment():
         }
 
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "BNK_MLOPS_HOL_"+USERNAME
-STORAGE = "s3a://eng-ml-weekly"
-CONNECTION_NAME = "eng-ml-int-env-aws-dl"
+DBNAME = "TELCO_MLOPS_"+USERNAME
+STORAGE = "s3a://goes-se-sandbox01"
+CONNECTION_NAME = "se-aw-edl"
 
 # SET MLFLOW EXPERIMENT NAME
-experimentName = "xgb-cc-fraud-{0}".format(USERNAME)
+experimentName = "xgb-telco-{0}".format(USERNAME)
 
 experimentId = mlflow.get_experiment_by_name(experimentName).experiment_id
 runsDf = mlflow.search_runs(experimentId, run_view_type=1)
@@ -194,7 +194,7 @@ experimentId = runsDf.iloc[-1]['experiment_id']
 experimentRunId = runsDf.iloc[-1]['run_id']
 
 modelPath = "artifacts"
-modelName = "FraudCLF-" + username
+modelName = "CellTowerFailure-CLF-" + username
 
 deployment = ModelReDeployment(projectId, username)
 getLatestDeploymentResponse = deployment.get_latest_deployment_details(modelName)

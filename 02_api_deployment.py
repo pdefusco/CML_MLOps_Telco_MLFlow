@@ -51,7 +51,7 @@ client.list_projects()
 
 projectId = os.environ['CDSW_PROJECT_ID']
 username = os.environ["PROJECT_OWNER"]
-experimentName = "xgb-cc-fraud-{0}".format(username)
+experimentName = "xgb-telco-{0}".format(username)
 
 experimentId = mlflow.get_experiment_by_name(experimentName).experiment_id
 runsDf = mlflow.search_runs(experimentId, run_view_type=1)
@@ -62,7 +62,7 @@ experimentRunId = runsDf.iloc[-1]['run_id']
 deployment = ModelDeployment(client, projectId, username, experimentName, experimentId)
 
 modelPath = "artifacts"
-modelName = "FraudCLF-" + username
+modelName = "CellTowerFailure-CLF-" + username
 
 # HOLD FOR A MOMENT AND THEN RUN THE FOLLOWING
 registeredModelResponse = deployment.registerModelFromExperimentRun(modelName, experimentId, experimentRunId, modelPath)

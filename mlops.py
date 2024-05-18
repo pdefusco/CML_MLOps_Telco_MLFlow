@@ -89,7 +89,7 @@ class ModelDeployment():
         Method to create a PRD Project
         """
 
-        createProjRequest = {"name": "MLOps Banking PRD", "template":"git", "git_url":"https://github.com/pdefusco/CML_MLOps_Banking_Demo_PRD.git"}
+        createProjRequest = {"name": "MLOps Telco PRD", "template":"git", "git_url":"https://github.com/pdefusco/CML_MLOps_Banking_Demo_PRD.git"}
 
         try:
             # Create a new project

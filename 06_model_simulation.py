@@ -58,12 +58,12 @@ import datetime
 
 # SET USER VARIABLES
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "BNK_MLOPS_HOL_{}".format(USERNAME)
-STORAGE = "s3a://eng-ml-weekly"
-CONNECTION_NAME = "eng-ml-int-env-aws-dl"
+DBNAME = "TELCO_MLOPS_"+USERNAME
+STORAGE = "s3a://goes-se-sandbox01"
+CONNECTION_NAME = "se-aw-edl"
 
 # Instantiate BankDataGen class
-dg = BankDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
+dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
 
 # Create CML Spark Connection
 spark = dg.createSparkConnection()
@@ -81,7 +81,7 @@ client.list_models(project_id)
 # You can use an APIV2-based utility to access the latest model's metadata. For more, explore the src folder
 apiUtil = ApiUtility()
 
-modelName = "FraudCLF-" + username
+modelName = "CellTowerFailure-CLF-" + username
 
 Model_AccessKey = apiUtil.get_latest_deployment_details(model_name=modelName)["model_access_key"]
 Deployment_CRN = apiUtil.get_latest_deployment_details(model_name=modelName)["latest_deployment_crn"]
@@ -90,10 +90,10 @@ Deployment_CRN = apiUtil.get_latest_deployment_details(model_name=modelName)["la
 
 def submitRequest(Model_AccessKey):
     """
-    Method to create and send a synthetic request to Time Series Query Model
+    Method to create and send a synthetic request to Model
     """
 
-    record = '{"dataframe_split": {"columns": ["age", "credit_card_balance", "bank_account_balance", "mortgage_balance", "sec_bank_account_balance", "savings_account_balance", "sec_savings_account_balance", "total_est_nworth", "primary_loan_balance", "secondary_loan_balance", "uni_loan_balance", "longitude", "latitude", "transaction_amount"]}}'
+    record = '{"dataframe_split": {"columns": ["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4"]}}'
     randomInts = [[random.uniform(1.01,500.01) for i in range(14)]]
     data = json.loads(record)
     data["dataframe_split"]["data"] = randomInts

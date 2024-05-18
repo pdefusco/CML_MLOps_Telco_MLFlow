@@ -51,12 +51,12 @@ import pyspark.pandas as ps
 
 # SET USER VARIABLES
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "BNK_MLOPS_HOL_"+USERNAME
-STORAGE = "s3a://eng-ml-weekly"
-CONNECTION_NAME = "eng-ml-int-env-aws-dl"
+DBNAME = "TELCO_MLOPS_"+USERNAME
+STORAGE = "s3a://goes-se-sandbox01"
+CONNECTION_NAME = "se-aw-edl"
 
 # SET MLFLOW EXPERIMENT NAME
-EXPERIMENT_NAME = "xgb-cc-fraud-{0}".format(USERNAME)
+EXPERIMENT_NAME = "xgb-telco-{0}".format(USERNAME)
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 # CREATE SPARK SESSION WITH DATA CONNECTIONS
@@ -64,15 +64,15 @@ conn = cmldata.get_connection(CONNECTION_NAME)
 spark = conn.get_spark_session()
 
 # READ LATEST ICEBERG METADATA
-snapshot_id = spark.read.format("iceberg").load('{0}.CC_TRX_{1}.snapshots'.format(DBNAME, USERNAME)).select("snapshot_id").tail(1)[0][0]
-committed_at = spark.read.format("iceberg").load('{0}.CC_TRX_{1}.snapshots'.format(DBNAME, USERNAME)).select("committed_at").tail(1)[0][0].strftime('%m/%d/%Y')
-parent_id = spark.read.format("iceberg").load('{0}.CC_TRX_{1}.snapshots'.format(DBNAME, USERNAME)).select("parent_id").tail(1)[0][0]
+snapshot_id = spark.read.format("iceberg").load('{0}.TELCO_CELL_TOWERS_{1}.snapshots'.format(DBNAME, USERNAME)).select("snapshot_id").tail(1)[0][0]
+committed_at = spark.read.format("iceberg").load('{0}.TELCO_CELL_TOWERS_{1}.snapshots'.format(DBNAME, USERNAME)).select("committed_at").tail(1)[0][0].strftime('%m/%d/%Y')
+parent_id = spark.read.format("iceberg").load('{0}.TELCO_CELL_TOWERS_{1}.snapshots'.format(DBNAME, USERNAME)).select("parent_id").tail(1)[0][0]
 
 incReadDf = spark.read\
     .format("iceberg")\
     .option("start-snapshot-id", parent_id)\
     .option("end-snapshot-id", snapshot_id)\
-    .load("{0}.CC_TRX_{1}".format(DBNAME, USERNAME))
+    .load("{0}.TELCO_CELL_TOWERS_{1}".format(DBNAME, USERNAME))
 
 df = incReadDf.toPandas()
 
@@ -85,7 +85,7 @@ tags = {
 }
 
 # TRAIN TEST SPLIT DATA
-X_train, X_test, y_train, y_test = train_test_split(df.drop("fraud_trx", axis=1), df["fraud_trx"], test_size=0.3)
+X_train, X_test, y_train, y_test = train_test_split(df.drop("cell_tower_failure", axis=1), df["cell_tower_failure"], test_size=0.3)
 
 # MLFLOW EXPERIMENT RUN
 with mlflow.start_run():

@@ -50,7 +50,7 @@ from faker.providers import bank, credit_card, currency
 import cml.data_v1 as cmldata
 
 
-class BankDataGen:
+class TelcoDataGen:
 
     '''Class to Generate Banking Data'''
 
@@ -61,36 +61,33 @@ class BankDataGen:
         self.connectionName = connectionName
 
 
-    def dataGen(self, spark, shuffle_partitions_requested = 5, partitions_requested = 2, data_rows = 10000):
+    def telcoDataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
         """
-        Method to create credit card transactions in Spark Df
+        Method to create IoT fleet data in Spark Df
         """
 
-        # setup use of Faker
-        FakerTextUS = FakerTextFactory(locale=['en_US'], providers=[bank])
+        manufacturers = ["New World Corp", "AI Inc.", "Hot Data Ltd"]
 
-        # partition parameters etc.
-        spark.conf.set("spark.sql.shuffle.partitions", shuffle_partitions_requested)
+        iotDataSpec = (
+            dg.DataGenerator(spark, name="device_data_set", rows=data_rows, partitions=partitions_requested)
+            .withIdOutput()
+            .withColumn("internal_device_id", "long", minValue=0x1000000000000, uniqueValues=int(data_rows/36), omit=True, baseColumnType="hash")
+            .withColumn("device_id", "string", format="0x%013x", baseColumn="internal_device_id")
+            .withColumn("manufacturer", "string", values=manufacturers, baseColumn="internal_device_id", )
+            .withColumn("model_ser", "integer", minValue=1, maxValue=11, baseColumn="device_id", baseColumnType="hash", omit=True, )
+            .withColumn("event_type", "string", values=["battery 10%", "battery 5%", "device error", "system malfunction"], random=True)
+            .withColumn("longitude", "float", expr="rand()*rand()+10 + -93.6295")
+            .withColumn("latitude", "float", expr="rand()*rand()+10 + 41.5949")
+            .withColumn("iot_signal_1", "integer", minValue=1, maxValue=10, random=True)
+            .withColumn("iot_signal_3", "integer", minValue=50, maxValue=55, random=True)
+            .withColumn("iot_signal_4", "integer", minValue=100, maxValue=107, random=True)
+            .withColumn("cell_tower_failure", "string", values=["0", "1"], weights=[9, 1], random=True)
 
-        fakerDataspec = (DataGenerator(spark, rows=data_rows, partitions=partitions_requested)
-                    .withColumn("age", "float", minValue=10, maxValue=100, random=True)
-                    .withColumn("credit_card_balance", "float", minValue=100, maxValue=30000, random=True)
-                    .withColumn("bank_account_balance", "float", minValue=0.01, maxValue=100000, random=True)
-                    .withColumn("mortgage_balance", "float", minValue=0.01, maxValue=1000000, random=True)
-                    .withColumn("sec_bank_account_balance", "float", minValue=0.01, maxValue=100000, random=True)
-                    .withColumn("savings_account_balance", "float", minValue=0.01, maxValue=500000, random=True)
-                    .withColumn("sec_savings_account_balance", "float", minValue=0.01, maxValue=500000, random=True)
-                    .withColumn("total_est_nworth", "float", minValue=10000, maxValue=500000, random=True)
-                    .withColumn("primary_loan_balance", "float", minValue=0.01, maxValue=5000, random=True)
-                    .withColumn("secondary_loan_balance", "float", minValue=0.01, maxValue=500000, random=True)
-                    .withColumn("uni_loan_balance", "float", minValue=0.01, maxValue=10000, random=True)
-                    .withColumn("longitude", "float", minValue=-180, maxValue=180, random=True)
-                    .withColumn("latitude", "float", minValue=-90, maxValue=90, random=True)
-                    .withColumn("transaction_amount", "float", minValue=0.01, maxValue=30000, random=True)
-                    .withColumn("fraud_trx", "string", values=["0", "1"], weights=[9, 1], random=True)
-                    )
-        df = fakerDataspec.build()
-        df = df.withColumn("fraud_trx", df["fraud_trx"].cast(IntegerType()))
+            df = iotDataSpec.build()
+        )
+
+        df = iotDataSpec.build()
+        df = df.withColumn("cell_tower_failure", df["cell_tower_failure"].cast(IntegerType()))
 
         return df
 
@@ -116,7 +113,7 @@ class BankDataGen:
         Method to save credit card transactions df as csv in cloud storage
         """
 
-        df.write.format("csv").mode('overwrite').save(self.storage + "/bank_fraud_demo/" + self.username)
+        df.write.format("csv").mode('overwrite').save(self.storage + "/telco_demo/" + self.username)
 
 
     def createDatabase(self, spark):
@@ -132,17 +129,17 @@ class BankDataGen:
 
     def createOrReplace(self, df):
         """
-        Method to create or append data to the BANKING TRANSACTIONS table
+        Method to create or append data to the TELCO_CELL_TOWERS table
         The table is used to simulate batches of new data
         The table is meant to be updated periodically as part of a CML Job
         """
 
         try:
-            df.writeTo("{0}.CC_TRX_{1}".format(self.dbname, self.username))\
+            df.writeTo("{0}.TELCO_CELL_TOWERS_{1}".format(self.dbname, self.username))\
               .using("iceberg").tableProperty("write.format.default", "parquet").append()
 
         except:
-            df.writeTo("{0}.CC_TRX_{1}".format(self.dbname, self.username))\
+            df.writeTo("{0}.TELCO_CELL_TOWERS_{1}".format(self.dbname, self.username))\
                 .using("iceberg").tableProperty("write.format.default", "parquet").createOrReplace()
 
 
@@ -157,18 +154,18 @@ class BankDataGen:
 def main():
 
     USERNAME = os.environ["PROJECT_OWNER"]
-    DBNAME = "BNK_MLOPS_HOL_"+USERNAME
-    STORAGE = "s3a://eng-ml-weekly"
-    CONNECTION_NAME = "eng-ml-int-env-aws-dl"
+    DBNAME = "TELCO_MLOPS_"+USERNAME
+    STORAGE = "s3a://goes-se-sandbox01"
+    CONNECTION_NAME = "se-aw-edl"
 
     # Instantiate BankDataGen class
-    dg = BankDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
+    dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
 
     # Create CML Spark Connection
     spark = dg.createSparkConnection()
 
     # Create Banking Transactions DF
-    df = dg.dataGen(spark)
+    df = dg.telcoDataGen(spark)
 
     # Create Spark Database
     dg.createDatabase(spark)

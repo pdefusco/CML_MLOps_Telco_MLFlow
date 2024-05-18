@@ -51,23 +51,23 @@ import pyspark.pandas as ps
 
 
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "BNK_MLOPS_HOL_"+USERNAME
-STORAGE = "s3a://eng-ml-weekly"
-CONNECTION_NAME = "eng-ml-int-env-aws-dl"
+DBNAME = "TELCO_MLOPS_"+USERNAME
+STORAGE = "s3a://goes-se-sandbox01"
+CONNECTION_NAME = "se-aw-edl"
 
 DATE = date.today()
-EXPERIMENT_NAME = "xgb-cc-fraud-{0}".format(USERNAME)
+EXPERIMENT_NAME = "xgb-telco-{0}".format(USERNAME)
 
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 conn = cmldata.get_connection(CONNECTION_NAME)
 spark = conn.get_spark_session()
 
-df_from_sql = ps.read_table('{0}.CC_TRX_{1}'.format(DBNAME, USERNAME))
+df_from_sql = ps.read_table('{0}.TELCO_CELL_TOWERS_{1}'.format(DBNAME, USERNAME))
 df = df_from_sql.to_pandas()
 
 test_size = 0.3
-X_train, X_test, y_train, y_test = train_test_split(df.drop("fraud_trx", axis=1), df["fraud_trx"], test_size=test_size)
+X_train, X_test, y_train, y_test = train_test_split(df.drop("cell_tower_failure", axis=1), df["cell_tower_failure"], test_size=test_size)
 
 with mlflow.start_run():
 
