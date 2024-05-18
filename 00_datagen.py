@@ -82,8 +82,6 @@ class TelcoDataGen:
             .withColumn("iot_signal_3", "integer", minValue=50, maxValue=55, random=True)
             .withColumn("iot_signal_4", "integer", minValue=100, maxValue=107, random=True)
             .withColumn("cell_tower_failure", "string", values=["0", "1"], weights=[9, 1], random=True)
-
-            df = iotDataSpec.build()
         )
 
         df = iotDataSpec.build()
