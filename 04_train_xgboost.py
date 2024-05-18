@@ -74,7 +74,7 @@ incReadDf = spark.read\
     .option("end-snapshot-id", snapshot_id)\
     .load("{0}.TELCO_CELL_TOWERS_{1}".format(DBNAME, USERNAME))
 
-incReadDf = incReadDf[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "iot_failure"]]
+incReadDf = incReadDf[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "cell_tower_failure"]]
 df = incReadDf.toPandas()
 
 # SET MLFLOW TAGS
