@@ -62,7 +62,7 @@ experimentRunId = runsDf.iloc[-1]['run_id']
 deployment = ModelDeployment(client, projectId, username, experimentName, experimentId)
 
 modelPath = "artifacts"
-modelName = "CellTowerFailure-CLF-" + username
+modelName = "CellTwrFail-CLF-" + username
 
 # HOLD FOR A MOMENT AND THEN RUN THE FOLLOWING
 registeredModelResponse = deployment.registerModelFromExperimentRun(modelName, experimentId, experimentRunId, modelPath)
@@ -75,6 +75,7 @@ createModelResponse = deployment.createModel(projectId, modelName, modelId)
 modelCreationId = createModelResponse.id
 
 runtimeId = "docker.repository.cloudera.com/cloudera/cdsw/ml-runtime-workbench-python3.9-standard:2024.02.1-b4" #Modify as needed
+
 createModelBuildResponse = deployment.createModelBuild(projectId, modelVersionId, modelCreationId, runtimeId)
 modelBuildId = createModelBuildResponse.id
 

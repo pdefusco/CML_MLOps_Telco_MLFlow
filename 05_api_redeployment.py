@@ -194,7 +194,7 @@ experimentId = runsDf.iloc[-1]['experiment_id']
 experimentRunId = runsDf.iloc[-1]['run_id']
 
 modelPath = "artifacts"
-modelName = "CellTowerFailure-CLF-" + username
+modelName = "CellTwrFail-CLF-" + username
 
 deployment = ModelReDeployment(projectId, username)
 getLatestDeploymentResponse = deployment.get_latest_deployment_details(modelName)
