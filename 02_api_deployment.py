@@ -81,4 +81,4 @@ modelBuildId = createModelBuildResponse.id
 deployment.createModelDeployment(modelBuildId, projectId, modelCreationId)
 
 ## NOW TRY A REQUEST WITH THIS PAYLOAD!
-#{"dataframe_split": {"columns": ["age", "credit_card_balance", "bank_account_balance", "mortgage_balance", "sec_bank_account_balance", "savings_account_balance", "sec_savings_account_balance", "total_est_nworth", "primary_loan_balance", "secondary_loan_balance", "uni_loan_balance", "longitude", "latitude", "transaction_amount"], "data":[[35.5, 20000.5, 3900.5, 14000.5, 2944.5, 3400.5, 12000.5, 29000.5, 1300.5, 15000.5, 10000.5, 2000.5, 90.5, 120.5]]}}
+#{"dataframe_split": {"columns": ["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4"], "data":[[35.5, 200.5, 30.5, 14.5]]}}
