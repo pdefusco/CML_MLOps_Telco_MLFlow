@@ -52,7 +52,7 @@ import cml.data_v1 as cmldata
 
 class TelcoDataGen:
 
-    '''Class to Generate Banking Data'''
+    '''Class to Generate Telco Data'''
 
     def __init__(self, username, dbname, storage, connectionName):
         self.username = username
@@ -63,7 +63,7 @@ class TelcoDataGen:
 
     def telcoDataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
         """
-        Method to create IoT fleet data in Spark Df
+        Method to create IoT data in Spark Df
         """
 
         manufacturers = ["New World Corp", "AI Inc.", "Hot Data Ltd"]
@@ -170,8 +170,8 @@ def main():
 
     USERNAME = os.environ["PROJECT_OWNER"]
     DBNAME = "TELCO_MLOPS_"+USERNAME
-    STORAGE = "s3a://goes-se-sandbox01"
-    CONNECTION_NAME = "se-aw-edl"
+    STORAGE = "s3a://go01-demo"
+    CONNECTION_NAME = "go01-aw-dl"
 
     # Instantiate BankDataGen class
     dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
