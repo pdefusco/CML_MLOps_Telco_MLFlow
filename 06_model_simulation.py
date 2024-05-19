@@ -69,7 +69,7 @@ dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
 spark = dg.createSparkConnection()
 
 # Create Banking Transactions DF
-sparkDf = dg.dataGen(spark)
+sparkDf = dg.telcoDataGen(spark)
 
 df = sparkDf.toPandas()
 
@@ -107,7 +107,7 @@ percent_max = len(df)
 
 # This will randomly return True for input and increases the likelihood of returning
 # true based on `percent`
-def bnkFraud(percent):
+def telcoFail(percent):
     if random.random() < percent:
         return 1
     else:
@@ -123,7 +123,7 @@ for i in range(1000):
         {
             "uuid": response["response"]["uuid"],
             "response_label": response["response"]["prediction"],
-            "final_label": bnkFraud(percent_counter / percent_max),
+            "final_label": telcoFail(percent_counter / percent_max),
             "timestamp_ms": int(round(time.time() * 1000)),
         }
     )

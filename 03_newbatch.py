@@ -180,7 +180,7 @@ def main():
     spark = dg.createSparkConnection()
 
     # Create Banking Transactions DF
-    df = dg.dataGen(spark)
+    df = dg.telcoDataGen(spark)
     df = dg.addCorrelatedColumn(df)
 
     # Create Spark Database
