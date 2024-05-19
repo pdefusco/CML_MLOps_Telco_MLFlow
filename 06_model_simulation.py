@@ -82,7 +82,7 @@ client.list_models(project_id)
 # You can use an APIV2-based utility to access the latest model's metadata. For more, explore the src folder
 apiUtil = ApiUtility()
 
-modelName = "CellTwrFail-CLF-" + username
+modelName = "CellTwrFail-CLF-" + USERNAME
 
 Model_AccessKey = apiUtil.get_latest_deployment_details(model_name=modelName)["model_access_key"]
 Deployment_CRN = apiUtil.get_latest_deployment_details(model_name=modelName)["latest_deployment_crn"]
