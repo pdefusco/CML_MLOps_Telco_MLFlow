@@ -70,6 +70,7 @@ spark = dg.createSparkConnection()
 
 # Create Banking Transactions DF
 sparkDf = dg.telcoDataGen(spark)
+df = dg.addCorrelatedColumn(sparkDf)
 
 df = sparkDf.toPandas()
 

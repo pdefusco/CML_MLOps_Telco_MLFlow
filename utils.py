@@ -61,7 +61,7 @@ class TelcoDataGen:
         self.connectionName = connectionName
 
 
-    def dataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
+    def telcoDataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
         """
         Method to create IoT fleet data in Spark Df
         """
