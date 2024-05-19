@@ -52,8 +52,8 @@ import pyspark.pandas as ps
 # SET USER VARIABLES
 USERNAME = os.environ["PROJECT_OWNER"]
 DBNAME = "TELCO_MLOPS_"+USERNAME
-STORAGE = "s3a://goes-se-sandbox01"
-CONNECTION_NAME = "se-aw-edl"
+STORAGE = "s3a://go01-demo"
+CONNECTION_NAME = "go01-aw-dl"
 
 # SET MLFLOW EXPERIMENT NAME
 EXPERIMENT_NAME = "xgb-telco-{0}".format(USERNAME)
