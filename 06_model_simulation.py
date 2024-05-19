@@ -49,7 +49,7 @@ from sklearn.metrics import classification_report
 import cmlapi
 from src.api import ApiUtility
 import cml.data_v1 as cmldata
-from utils import BankDataGen
+from utils import TelcoDataGen
 import datetime
 
 #---------------------------------------------------
