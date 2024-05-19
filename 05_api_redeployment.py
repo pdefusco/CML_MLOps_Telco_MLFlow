@@ -43,7 +43,7 @@ from cmlapi.rest import ApiException
 from pprint import pprint
 import json, secrets, os, time
 import mlflow
-
+from mlops import ModelDeployment
 
 class ModelReDeployment():
     """
@@ -183,6 +183,7 @@ USERNAME = os.environ["PROJECT_OWNER"]
 DBNAME = "TELCO_MLOPS_"+USERNAME
 STORAGE = "s3a://go01-demo"
 CONNECTION_NAME = "go01-aw-dl"
+projectId = os.environ['CDSW_PROJECT_ID']
 
 # SET MLFLOW EXPERIMENT NAME
 experimentName = "xgb-telco-{0}".format(USERNAME)
@@ -195,6 +196,26 @@ experimentRunId = runsDf.iloc[-1]['run_id']
 
 modelPath = "artifacts"
 modelName = "CellTwrFail-CLF-" + USERNAME
+
+# HOLD FOR A MOMENT AND THEN RUN THE FOLLOWING
+registeredModelResponse = deployment.registerModelFromExperimentRun(modelName, experimentId, experimentRunId, modelPath)
+
+modelId = registeredModelResponse.model_id
+modelVersionId = registeredModelResponse.model_versions[0].model_version_id
+
+registeredModelResponse.model_versions[0].model_version_id
+createModelResponse = deployment.createModel(projectId, modelName, modelId)
+modelCreationId = createModelResponse.id
+
+runtimeId = "docker.repository.cloudera.com/cloudera/cdsw/ml-runtime-workbench-python3.9-standard:2024.02.1-b4" #Modify as needed
+
+createModelBuildResponse = deployment.createModelBuild(projectId, modelVersionId, modelCreationId, runtimeId)
+modelBuildId = createModelBuildResponse.id
+
+deployment.createModelDeployment(modelBuildId, projectId, modelCreationId)
+
+
+
 
 deployment = ModelReDeployment(projectId, USERNAME)
 getLatestDeploymentResponse = deployment.get_latest_deployment_details(modelName)
