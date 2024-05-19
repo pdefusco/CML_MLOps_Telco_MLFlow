@@ -72,7 +72,7 @@ spark = dg.createSparkConnection()
 sparkDf = dg.telcoDataGen(spark)
 df = dg.addCorrelatedColumn(sparkDf)
 
-df = sparkDf.toPandas()
+df = df.toPandas()
 
 # You can access all models with API V2
 client = cmlapi.default_client()
