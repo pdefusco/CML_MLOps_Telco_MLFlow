@@ -95,7 +95,7 @@ def submitRequest(Model_AccessKey):
     """
 
     record = '{"dataframe_split": {"columns": ["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4"]}}'
-    randomInts = [[random.uniform(1.01,500.01) for i in range(14)]]
+    randomInts = [[random.uniform(1.01,500.01) for i in range(4)]]
     data = json.loads(record)
     data["dataframe_split"]["data"] = randomInts
     response = cdsw.call_model(Model_AccessKey, data)
