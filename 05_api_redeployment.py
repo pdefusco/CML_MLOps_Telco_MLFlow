@@ -208,8 +208,8 @@ class ModelReDeployment():
 
 USERNAME = os.environ["PROJECT_OWNER"]
 DBNAME = "TELCO_MLOPS_"+USERNAME
-STORAGE = "s3a://go01-demo"
-CONNECTION_NAME = "go01-aw-dl"
+STORAGE = "s3a://ita-jul-buk-e1ea29ca/data/"
+CONNECTION_NAME = "ita-jul-aw-dl"
 projectId = os.environ['CDSW_PROJECT_ID']
 
 # SET MLFLOW EXPERIMENT NAME
