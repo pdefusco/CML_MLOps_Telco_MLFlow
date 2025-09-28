@@ -63,7 +63,7 @@ class TelcoDataGen:
 
     def telcoDataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
         """
-        Method to create telco cell tower in Spark Df
+        Method to create IoT data in Spark Df
         """
 
         manufacturers = ["New World Corp", "AI Inc.", "Hot Data Ltd"]
@@ -86,6 +86,12 @@ class TelcoDataGen:
 
         df = iotDataSpec.build()
         df = df.withColumn("cell_tower_failure", df["cell_tower_failure"].cast(IntegerType()))
+                df = df.withColumn(
+                    "signal_score",
+                    F.when(rand() < 0.20, rand())  # 20% of the time, just random noise
+                    .otherwise(F.col("cell_tower_failure") * F.col("iot_signal_1") * F.col("iot_signal_3"))
+                )
+                df = df.withColumn("signal_score", F.col("signal_score").cast(FloatType()))
 
         return df
 
@@ -169,12 +175,11 @@ class TelcoDataGen:
 def main():
 
     USERNAME = os.environ["PROJECT_OWNER"]
-    DBNAME = "TELCO_MLOPS_"+USERNAME
-    STORAGE = "s3a://ita-jul-buk-e1ea29ca/data/"
-    CONNECTION_NAME = "ita-jul-aw-dl"
+    DBNAME = os.environ["DBNAME_PREFIX"]+"_"+USERNAME
+    CONNECTION_NAME = os.environ["SPARK_CONNECTION_NAME"]
 
     # Instantiate BankDataGen class
-    dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
+    dg = TelcoDataGen(USERNAME, DBNAME, CONNECTION_NAME)
 
     # Create CML Spark Connection
     spark = dg.createSparkConnection()

@@ -51,9 +51,8 @@ import pyspark.pandas as ps
 
 # SET USER VARIABLES
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "TELCO_MLOPS_"+USERNAME
-STORAGE = "s3a://ita-jul-buk-e1ea29ca/data/"
-CONNECTION_NAME = "ita-jul-aw-dl"
+DBNAME = os.environ["DBNAME_PREFIX"]+"_"+USERNAME
+CONNECTION_NAME = os.environ["SPARK_CONNECTION_NAME"]
 
 # SET MLFLOW EXPERIMENT NAME
 EXPERIMENT_NAME = "xgb-telco-{0}".format(USERNAME)
@@ -74,7 +73,7 @@ incReadDf = spark.read\
     .option("end-snapshot-id", snapshot_id)\
     .load("{0}.TELCO_CELL_TOWERS_{1}".format(DBNAME, USERNAME))
 
-incReadDf = incReadDf[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "cell_tower_failure"]]
+incReadDf = incReadDf[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "signal_score", "cell_tower_failure"]]
 df = incReadDf.toPandas()
 
 # SET MLFLOW TAGS

@@ -63,7 +63,7 @@ conn = cmldata.get_connection(CONNECTION_NAME)
 spark = conn.get_spark_session()
 
 df_from_sql = ps.read_table('SPARK_CATALOG.TELCO_MEDALLION.PRODUCTS_SILVER')
-df_from_sql = df_from_sql[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "cell_tower_failure"]]
+df_from_sql = df_from_sql[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "signal_score", "cell_tower_failure"]]
 df = df_from_sql.to_pandas()
 
 test_size = 0.3

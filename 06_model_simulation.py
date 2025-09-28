@@ -58,12 +58,11 @@ import datetime
 
 # SET USER VARIABLES
 USERNAME = os.environ["PROJECT_OWNER"]
-DBNAME = "TELCO_MLOPS_"+USERNAME
-STORAGE = "s3a://ita-jul-buk-e1ea29ca/data/"
-CONNECTION_NAME = "ita-jul-aw-dl"
+DBNAME = os.environ["DBNAME_PREFIX"]+"_"+USERNAME
+CONNECTION_NAME = os.environ["SPARK_CONNECTION_NAME"]
 
 # Instantiate BankDataGen class
-dg = TelcoDataGen(USERNAME, DBNAME, STORAGE, CONNECTION_NAME)
+dg = TelcoDataGen(USERNAME, DBNAME, CONNECTION_NAME)
 
 # Create CML Spark Connection
 spark = dg.createSparkConnection()
@@ -94,7 +93,7 @@ def submitRequest(Model_AccessKey):
     Method to create and send a synthetic request to Model
     """
 
-    record = '{"dataframe_split": {"columns": ["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4"]}}'
+    record = '{"dataframe_split": {"columns": ["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "signal_score"]}}'
     randomInts = [[random.uniform(1.01,500.01) for i in range(4)]]
     data = json.loads(record)
     data["dataframe_split"]["data"] = randomInts
