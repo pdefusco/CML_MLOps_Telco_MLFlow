@@ -51,14 +51,12 @@ import cml.data_v1 as cmldata
 from pyspark.sql import functions as F
 from pyspark.sql.functions import when, rand
 
-
 class TelcoDataGen:
 
     '''Class to Generate Telco Cell Tower Data'''
 
-    def __init__(self, username, dbname, storage, connectionName):
+    def __init__(self, username, dbname, connectionName):
         self.username = username
-        self.storage = storage
         self.dbname = dbname
         self.connectionName = connectionName
 
@@ -88,12 +86,12 @@ class TelcoDataGen:
 
         df = iotDataSpec.build()
         df = df.withColumn("cell_tower_failure", df["cell_tower_failure"].cast(IntegerType()))
-        df = df.withColumn(
-            "signal_score",
-            F.when(rand() < 0.20, rand())  # 20% of the time, just random noise
-            .otherwise(F.col("cell_tower_failure") * F.col("iot_signal_1") * F.col("iot_signal_3"))
-        )
-        df = df.withColumn("signal_score", F.col("signal_score").cast(FloatType()))
+                df = df.withColumn(
+                    "signal_score",
+                    F.when(rand() < 0.20, rand())  # 20% of the time, just random noise
+                    .otherwise(F.col("cell_tower_failure") * F.col("iot_signal_1") * F.col("iot_signal_3"))
+                )
+                df = df.withColumn("signal_score", F.col("signal_score").cast(FloatType()))
 
         return df
 
