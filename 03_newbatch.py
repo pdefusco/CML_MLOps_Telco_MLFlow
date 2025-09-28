@@ -41,13 +41,15 @@ import os
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from pyspark.sql.types import LongType, IntegerType, StringType
+from pyspark.sql.types import LongType, IntegerType, StringType, FloatType
 from pyspark.sql import SparkSession
 import dbldatagen as dg
 import dbldatagen.distributions as dist
 from dbldatagen import FakerTextFactory, DataGenerator, fakerText
 from faker.providers import bank, credit_card, currency
 import cml.data_v1 as cmldata
+from pyspark.sql import functions as F
+from pyspark.sql.functions import when, rand
 
 
 class TelcoDataGen:
