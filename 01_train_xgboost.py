@@ -51,8 +51,8 @@ import pyspark.pandas as ps
 
 
 USERNAME = os.environ["PROJECT_OWNER"]
-STORAGE = "s3a://ita-jul-buk-e1ea29ca/data/"
-CONNECTION_NAME = "ita-jul-aw-dl"
+DBNAME = os.environ["DBNAME_PREFIX"]+"_"+USERNAME
+CONNECTION_NAME = os.environ["SPARK_CONNECTION_NAME"]
 
 DATE = date.today()
 EXPERIMENT_NAME = "xgb-telco-{0}".format(USERNAME)
@@ -62,7 +62,7 @@ mlflow.set_experiment(EXPERIMENT_NAME)
 conn = cmldata.get_connection(CONNECTION_NAME)
 spark = conn.get_spark_session()
 
-df_from_sql = ps.read_table('SPARK_CATALOG.TELCO_MEDALLION.PRODUCTS_SILVER')
+df_from_sql = ps.read_table('{0}.TELCO_CELL_TOWERS_{1}.snapshots'.format(DBNAME, USERNAME))
 df_from_sql = df_from_sql[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "signal_score", "cell_tower_failure"]]
 df = df_from_sql.to_pandas()
 
