@@ -82,6 +82,7 @@ incReadDf = spark.read\
 # ----------------------------
 # Data prep and model training
 # ----------------------------
+incReadDf = incReadDf[["iot_signal_1", "iot_signal_2", "iot_signal_3", "iot_signal_4", "signal_score", "cell_tower_failure"]]
 df = incReadDf.toPandas()
 
 X_train, X_test, y_train, y_test = train_test_split(
