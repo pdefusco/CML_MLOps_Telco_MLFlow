@@ -38,7 +38,12 @@
 #
 # ###########################################################################
 
-import cdsw
+try:
+    import cml.utils_v1 as utils
+    cdsw = utils._emulate_cdsw()
+except ImportError:
+    import cdsw
+    
 import time, os, random, json, copy
 import numpy as np
 import pandas as pd
