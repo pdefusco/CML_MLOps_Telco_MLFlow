@@ -54,9 +54,8 @@ class TelcoDataGen:
 
     '''Class to Generate Telco Data'''
 
-    def __init__(self, username, dbname, storage, connectionName):
+    def __init__(self, username, dbname, connectionName):
         self.username = username
-        self.storage = storage
         self.dbname = dbname
         self.connectionName = connectionName
 
