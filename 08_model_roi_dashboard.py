@@ -114,12 +114,13 @@ app.layout = html.Div([
             "False Negatives, and Net Revenue.",
             style={"font-size": "18px", "font-family": "Arial, sans-serif", "color": "gray"}
         ),
-        html.P(
-            "Net Revenue = TP Revenue + TN Revenue - Penalty for FP - Opportunity cost for FN. "
-            "TP Revenue = TP * Revenue1, TN Revenue = TN * Revenue0, FP Penalty = FP * PenaltyFP, "
-            "FN Opportunity Cost = FN * Revenue1.",
-            style={"font-size": "18px", "font-family": "Arial, sans-serif", "color": "gray"}
-        )
+        html.P([
+            html.Span("Net Revenue = TP Revenue + TN Revenue - Penalty for FP - Opportunity cost for FN."),
+            html.Br(),
+            html.Span("TP Revenue = TP * Revenue1, TN Revenue = TN * Revenue0,"),
+            html.Br(),
+            html.Span("FP Penalty = FP * PenaltyFP, FN Opportunity Cost = FN * Revenue1.")
+        ], style={"font-size": "18px", "font-family": "'Segoe UI', 'Helvetica Neue', sans-serif", "color": "black"})
     ], style={"margin-bottom": "30px"}),
 
     # Inputs at the top
@@ -166,7 +167,7 @@ app.layout = html.Div([
         html.Div(id="accuracy-text", style={"margin-top": "20px", "font-size": "20px", "font-family": "Arial, sans-serif"}),
         html.Div(id="breakdown-text", style={"margin-top": "10px", "font-size": "18px", "font-family": "Arial, sans-serif", "color": "darkblue"})
     ])
-])
+], style={"font-family": "'Segoe UI', 'Helvetica Neue', sans-serif"})
 
 # ----------------------------
 # Callback
