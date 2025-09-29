@@ -62,7 +62,7 @@ class TelcoDataGen:
 
     def telcoDataGen(self, spark, shuffle_partitions_requested = 1, partitions_requested = 1, data_rows = 1440):
         """
-        Method to create IoT fleet data in Spark Df
+        Method to create IoT data in Spark Df
         """
 
         manufacturers = ["New World Corp", "AI Inc.", "Hot Data Ltd"]
@@ -74,16 +74,23 @@ class TelcoDataGen:
             .withColumn("device_id", "string", format="0x%013x", baseColumn="internal_device_id")
             .withColumn("manufacturer", "string", values=manufacturers, baseColumn="internal_device_id", )
             .withColumn("model_ser", "integer", minValue=1, maxValue=11, baseColumn="device_id", baseColumnType="hash", omit=True, )
-            .withColumn("event_type", "string", values=["tank below 10%", "tank below 5%", "device error", "system malfunction"], random=True)
-            .withColumn("event_ts", "timestamp", begin="2023-12-01 01:00:00", end="2023-12-01 23:59:00", interval="1 minute", random=False )
-            .withColumn("longitude", "float", expr="rand() + -93.6295")
-            .withColumn("latitude", "float", expr="rand() + 41.5949")
+            .withColumn("event_type", "string", values=["battery 10%", "battery 5%", "device error", "system malfunction"], random=True)
+            .withColumn("longitude", "float", expr="rand()*rand()+10 + -93.6295")
+            .withColumn("latitude", "float", expr="rand()*rand()+10 + 41.5949")
             .withColumn("iot_signal_1", "integer", minValue=1, maxValue=10, random=True)
             .withColumn("iot_signal_3", "integer", minValue=50, maxValue=55, random=True)
             .withColumn("iot_signal_4", "integer", minValue=100, maxValue=107, random=True)
+            .withColumn("cell_tower_failure", "string", values=["0", "1"], weights=[6, 4], random=True)
         )
 
         df = iotDataSpec.build()
+        df = df.withColumn("cell_tower_failure", df["cell_tower_failure"].cast(IntegerType()))
+        df = df.withColumn(
+            "signal_score",
+            F.when(rand() < 0.20, rand())  # 20% of the time, just random noise
+            .otherwise(F.col("cell_tower_failure") * F.col("iot_signal_1") * F.col("iot_signal_3"))
+        )
+        df = df.withColumn("signal_score", F.col("signal_score").cast(FloatType()))
 
         return df
 
