@@ -74,7 +74,7 @@ registeredModelResponse.model_versions[0].model_version_id
 createModelResponse = deployment.createModel(projectId, modelName, modelId)
 modelCreationId = createModelResponse.id
 
-runtimeId = "docker.repository.cloudera.com/cloudera/cdsw/ml-runtime-pbj-workbench-python3.10-standard:2025.06.1-b5" #Modify as needed
+runtimeId = "docker.repository.cloudera.com/cloudera/cdsw/ml-runtime-pbj-workbench-python3.10-standard:2025.09.1-b5" #Modify as needed
 
 createModelBuildResponse = deployment.createModelBuild(projectId, modelVersionId, modelCreationId, runtimeId)
 modelBuildId = createModelBuildResponse.id
